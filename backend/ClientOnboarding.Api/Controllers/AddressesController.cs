@@ -25,4 +25,25 @@ public class AddressesController : ControllerBase
         var created = await _service.CreateAsync(personalId, request);
         return Created($"/api/addresses/{created.Id}", created);
     }
+
+    [HttpGet("api/addresses/{id:long}")]
+    public async Task<ActionResult<AddressResponse>> GetById(long id)
+    {
+        var result = await _service.GetByIdAsync(id);
+        return Ok(result);
+    }
+
+    [HttpPut("api/addresses/{id:long}")]
+    public async Task<ActionResult<AddressResponse>> Update(long id, [FromBody] AddressRequest request)
+    {
+        var result = await _service.UpdateAsync(id, request);
+        return Ok(result);
+    }
+
+    [HttpDelete("api/addresses/{id:long}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+        await _service.DeleteAsync(id);
+        return NoContent();
+    }
 }

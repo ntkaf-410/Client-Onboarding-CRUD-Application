@@ -88,4 +88,44 @@ public class AddressService : IAddressService
         CreatedAt = DbTime.AsUtc(a.CreatedAt),
         UpdatedAt = DbTime.AsUtc(a.UpdatedAt)
     };
+    public async Task<AddressResponse> GetByIdAsync(long id)
+{
+    var address = await _addresses.GetByIdAsync(id)
+        ?? throw new NotFoundException($"Address with id {id} was not found");
+
+    return ToResponse(address);
+}
+
+    public async Task<AddressResponse> UpdateAsync(long id, AddressRequest request)
+{
+    var address = await _addresses.GetByIdForUpdateAsync(id)
+        ?? throw new NotFoundException($"Address with id {id} was not found");
+
+    if (await _addresses.ExistsByTypeAsync(address.PersonalId, request.AddressType, excludeId: id))
+        throw new DuplicateResourceException(
+            $"This client already has a {request.AddressType} address", "addressType");
+
+    ApplyRequest(address, request);
+    address.UpdatedAt = DbTime.Now();
+
+    try
+    {
+        await _addresses.UpdateAsync(address);
+    }
+    catch (DbUpdateException ex) when (DbErrors.IsUniqueViolation(ex))
+    {
+        throw new DuplicateResourceException(
+            $"This client already has a {request.AddressType} address", "addressType");
+    }
+
+    return ToResponse(address);
+}
+
+public async Task DeleteAsync(long id)
+{
+    var deleted = await _addresses.DeleteAsync(id);
+
+    if (!deleted)
+        throw new NotFoundException($"Address with id {id} was not found");
+}
 }
