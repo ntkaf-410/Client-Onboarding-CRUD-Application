@@ -54,6 +54,24 @@ public class AppDbContext : DbContext
             entity.Property(a => a.UpdatedAt).HasColumnType("timestamp without time zone");
             entity.HasIndex(a => new { a.PersonalId, a.AddressType }).IsUnique();
         });
-    
+
+    modelBuilder.Entity<PersonalOnboarding>(entity =>
+{
+        entity.ToTable("personal_onboarding");
+        entity.HasKey(o => o.Id);
+        entity.Property(o => o.Id).ValueGeneratedOnAdd();
+        entity.Property(o => o.Status).HasMaxLength(12);
+        entity.Property(o => o.CurrentStep).HasColumnType("smallint");
+        entity.Property(o => o.SubmittedAt).HasColumnType("timestamp without time zone");
+        entity.Property(o => o.CreatedAt)
+            .HasColumnType("timestamp without time zone")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+        entity.Property(o => o.UpdatedAt).HasColumnType("timestamp without time zone");
+        entity.HasOne(o => o.Personal)
+            .WithOne()
+            .HasForeignKey<PersonalOnboarding>(o => o.PersonalId)
+            .OnDelete(DeleteBehavior.Cascade);
+        entity.HasIndex(o => o.PersonalId).IsUnique();
+});
     }
 }

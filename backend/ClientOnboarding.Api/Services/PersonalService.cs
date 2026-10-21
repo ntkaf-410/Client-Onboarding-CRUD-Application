@@ -17,8 +17,7 @@ public class PersonalService : IPersonalService
 
     public async Task<PagedResponse<PersonalResponse>> GetPagedAsync(int page, int size, string? search)
     {
-        page = Math.Max(page, 0);
-        size = Math.Clamp(size, 1, MaxSize);
+        (page, size) = Paging.Normalise(page, size);
 
         var (items, totalItems) = await _repository.GetPagedAsync(page, size, search);
 
@@ -28,7 +27,7 @@ public class PersonalService : IPersonalService
             Page = page,
             Size = size,
             TotalItems = totalItems,
-            TotalPages = (int)Math.Ceiling(totalItems / (double)size)
+            TotalPages = Paging.TotalPages(totalItems, size)
         };
     }
 
