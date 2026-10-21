@@ -35,4 +35,11 @@ public class PersonalsController : ControllerBase
         var created = await _service.CreateAsync(request);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
+
+    [HttpPut("{id:long}")]
+    public async Task<ActionResult<PersonalResponse>> Update(long id, [FromBody] PersonalRequest request)
+    {
+    var result = await _service.UpdateAsync(id, request);
+    return Ok(result);
+    }
 }

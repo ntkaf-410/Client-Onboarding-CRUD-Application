@@ -38,12 +38,23 @@ public class PersonalRepository : IPersonalRepository
     public async Task<Personal?> GetByIdAsync(long id) =>
         await _db.Personals.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
 
-    public Task<bool> ExistsByIdDocumentAsync(string idType, string idNumber) =>
-        _db.Personals.AnyAsync(p => p.IdType == idType && p.IdNumber == idNumber);
+    public async Task<bool> ExistsByIdDocumentAsync(string idType, string idNumber, long? excludeId = null) =>
+    await _db.Personals.AnyAsync(p =>
+        p.IdType == idType &&
+        p.IdNumber == idNumber &&
+        (excludeId == null || p.Id != excludeId));
 
+    public async Task<Personal?> GetByIdForUpdateAsync(long id) =>
+    await _db.Personals.FirstOrDefaultAsync(p => p.Id == id);
     public async Task AddAsync(Personal personal)
     {
         await _db.Personals.AddAsync(personal);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Personal personal)
+    {
+        _db.Personals.Update(personal);
         await _db.SaveChangesAsync();
     }
 }

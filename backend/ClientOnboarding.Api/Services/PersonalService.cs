@@ -91,6 +91,7 @@ public class PersonalService : IPersonalService
         CreatedAt = now,
         UpdatedAt = now
     };
+    ApplyRequest(personal, request);
 
     try
     {
@@ -108,4 +109,52 @@ public class PersonalService : IPersonalService
 
 private static string? TrimOrNull(string? value) =>
     string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    
+private static void ApplyRequest(Personal personal, PersonalRequest request)
+{
+    personal.Title = request.Title;
+    personal.FirstName = request.FirstName.Trim();
+    personal.MiddleName = TrimOrNull(request.MiddleName);
+    personal.LastName = request.LastName.Trim();
+    personal.DateOfBirth = request.DateOfBirth!.Value;
+    personal.Gender = request.Gender;
+    personal.MaritalStatus = request.MaritalStatus;
+    personal.Nationality = request.Nationality.Trim();
+    personal.IdType = request.IdType;
+    personal.IdNumber = request.IdNumber.Trim();
+    personal.IdExpiryDate = request.IdExpiryDate;
+    personal.Email = request.Email.Trim();
+    personal.MobileNumber = request.MobileNumber.Trim();
+    personal.Occupation = TrimOrNull(request.Occupation);
+    personal.EmploymentStatus = request.EmploymentStatus;
+}
+
+private static bool IsUniqueViolation(DbUpdateException ex) =>
+    ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation };
+public async Task<PersonalResponse> UpdateAsync(long id, PersonalRequest request)
+{
+    var personal = await _repository.GetByIdForUpdateAsync(id)
+        ?? throw new NotFoundException($"Personal with id {id} was not found");
+
+    var idNumber = request.IdNumber.Trim();
+
+    if (await _repository.ExistsByIdDocumentAsync(request.IdType, idNumber, excludeId: id))
+        throw new DuplicateResourceException(
+            "A client with this ID type and number already exists", "idNumber");
+
+    ApplyRequest(personal, request);
+    personal.UpdatedAt = DbTime.Now();
+
+    try
+    {
+        await _repository.UpdateAsync(personal);
+    }
+    catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+    {
+        throw new DuplicateResourceException(
+            "A client with this ID type and number already exists", "idNumber");
+    }
+
+    return ToResponse(personal);
+}
 }
