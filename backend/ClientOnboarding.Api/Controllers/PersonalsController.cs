@@ -42,4 +42,11 @@ public class PersonalsController : ControllerBase
     var result = await _service.UpdateAsync(id, request);
     return Ok(result);
     }
+    
+    [HttpDelete("{id:long}")]
+    public async Task<IActionResult> Delete(long id)
+    {
+    await _service.DeleteAsync(id);
+    return NoContent();
+    }
 }

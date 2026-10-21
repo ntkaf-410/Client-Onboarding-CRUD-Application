@@ -157,4 +157,10 @@ public async Task<PersonalResponse> UpdateAsync(long id, PersonalRequest request
 
     return ToResponse(personal);
 }
+public async Task DeleteAsync(long id)
+{
+    var deleted = await _repository.DeleteAsync(id);
+    if (!deleted)
+        throw new NotFoundException($"Personal with id {id} was not found");
+}
 }

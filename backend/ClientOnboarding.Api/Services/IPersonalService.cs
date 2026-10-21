@@ -8,4 +8,5 @@ public interface IPersonalService
     Task<PersonalResponse> GetByIdAsync(long id);
     Task<PersonalResponse> CreateAsync(PersonalRequest request);
     Task<PersonalResponse> UpdateAsync(long id, PersonalRequest request);
+    Task DeleteAsync(long id);
 }

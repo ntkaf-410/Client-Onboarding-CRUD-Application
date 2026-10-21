@@ -57,4 +57,7 @@ public class PersonalRepository : IPersonalRepository
         _db.Personals.Update(personal);
         await _db.SaveChangesAsync();
     }
+
+    public async Task<bool> DeleteAsync(long id) =>
+        await _db.Personals.Where(p => p.Id == id).ExecuteDeleteAsync() > 0;
 }
