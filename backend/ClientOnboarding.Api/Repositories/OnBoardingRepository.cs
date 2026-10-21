@@ -51,4 +51,12 @@ public class OnboardingRepository : IOnboardingRepository
         await _db.SaveChangesAsync();
         return onboarding;
     }
+
+    public async Task<PersonalOnboarding?> GetByIdForUpdateAsync(long id) =>
+        await _db.Set<PersonalOnboarding>().FirstOrDefaultAsync(o => o.Id == id);
+
+    public async Task UpdateAsync(PersonalOnboarding onboarding)
+    {
+    await _db.SaveChangesAsync();
+    }
 }

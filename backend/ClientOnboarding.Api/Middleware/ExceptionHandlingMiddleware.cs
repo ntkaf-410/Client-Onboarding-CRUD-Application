@@ -34,6 +34,11 @@ public class ExceptionHandlingMiddleware
             await WriteAsync(context, StatusCodes.Status409Conflict,
                 "DUPLICATE_RESOURCE", ex.Message, fieldErrors);
         }
+        catch (BusinessRuleException ex)
+        {
+            await WriteAsync(context, StatusCodes.Status422UnprocessableEntity,
+                "BUSINESS_RULE_VIOLATION", ex.Message, ex.Details.Count > 0 ? ex.Details.ToList() : null);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled error on {Method} {Path}",

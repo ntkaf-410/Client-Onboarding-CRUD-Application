@@ -11,17 +11,20 @@ public class OnboardingService : IOnboardingService
 {
     private readonly IOnboardingRepository _onboardings;
     private readonly IPersonalRepository _personals;
+    private readonly IAddressRepository _addressRepository;
     private readonly IPersonalService _personalService;
     private readonly IAddressService _addressService;
 
     public OnboardingService(
         IOnboardingRepository onboardings,
         IPersonalRepository personals,
+        IAddressRepository addressRepository,
         IPersonalService personalService,
         IAddressService addressService)
     {
         _onboardings = onboardings;
         _personals = personals;
+        _addressRepository = addressRepository;
         _personalService = personalService;
         _addressService = addressService;
     }
@@ -112,4 +115,60 @@ public class OnboardingService : IOnboardingService
         Personal = personal,
         Addresses = addresses
     };
+
+    public async Task<OnboardingResponse> UpdateAsync(long id, OnboardingUpdateRequest request)
+{
+    var onboarding = await _onboardings.GetByIdForUpdateAsync(id)
+        ?? throw new NotFoundException($"Onboarding with id {id} was not found");
+
+    EnsureDraft(onboarding);                                    
+
+    onboarding.CurrentStep = Math.Max(onboarding.CurrentStep, request.CurrentStep!.Value);
+    onboarding.UpdatedAt = DbTime.Now();                       
+
+    await _onboardings.UpdateAsync(onboarding);
+    return await GetByIdAsync(id);
+}
+
+public async Task DeleteAsync(long id)
+{
+    var onboarding = await _onboardings.GetByIdAsync(id)
+        ?? throw new NotFoundException($"Onboarding with id {id} was not found");
+
+    if (!await _personals.DeleteAsync(onboarding.PersonalId))
+        throw new NotFoundException($"Onboarding with id {id} was not found");
+}
+
+    public async Task<OnboardingResponse> SubmitAsync(long id)
+{
+        var onboarding = await _onboardings.GetByIdForUpdateAsync(id)
+            ?? throw new NotFoundException($"Onboarding with id {id} was not found");
+
+        EnsureDraft(onboarding);                                    
+
+        var personal = await _personals.GetByIdAsync(onboarding.PersonalId)
+            ?? throw new NotFoundException($"Personal with id {onboarding.PersonalId} was not found");
+        var addresses = await _addressRepository.GetByPersonalIdAsync(onboarding.PersonalId);
+
+        var missing = OnboardingRules.FindMissing(personal, addresses);  
+        if (missing.Count > 0)
+            throw new BusinessRuleException(
+                "The onboarding is incomplete and cannot be submitted", missing);
+
+        var now = DbTime.Now();
+        onboarding.Status = OnboardingStatus.Submitted;
+        onboarding.CurrentStep = 3;
+        onboarding.SubmittedAt = now;                             
+        onboarding.UpdatedAt = now;
+
+        await _onboardings.UpdateAsync(onboarding);
+        return await GetByIdAsync(id);
+}
+
+private static void EnsureDraft(PersonalOnboarding onboarding)
+{
+    if (onboarding.Status != OnboardingStatus.Draft)
+        throw new BusinessRuleException(
+            $"Only a DRAFT onboarding can be changed; this one is {onboarding.Status}");
+}
 }

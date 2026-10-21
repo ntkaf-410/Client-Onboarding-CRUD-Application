@@ -38,4 +38,26 @@ public class OnboardingsController : ControllerBase
         var created = await _service.CreateAsync(request);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
+
+    [HttpPut("{id:long}")]
+    public async Task<ActionResult<OnboardingResponse>> Update(
+        long id, [FromBody] OnboardingUpdateRequest request)
+    {
+        var result = await _service.UpdateAsync(id, request);
+        return Ok(result);
+    }
+
+    [HttpDelete("{id:long}")]
+public async Task<IActionResult> Delete(long id)
+{
+    await _service.DeleteAsync(id);
+    return NoContent();
+}
+
+[HttpPost("{id:long}/submit")]
+public async Task<ActionResult<OnboardingResponse>> Submit(long id)
+{
+    var result = await _service.SubmitAsync(id);
+    return Ok(result);
+}
 }

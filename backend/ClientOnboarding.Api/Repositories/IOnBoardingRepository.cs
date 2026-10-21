@@ -9,4 +9,7 @@ public interface IOnboardingRepository
     Task<PersonalOnboarding?> GetByIdAsync(long id);
     Task<bool> ExistsForPersonalAsync(long personalId);
     Task<PersonalOnboarding> AddAsync(PersonalOnboarding onboarding);
+    Task<PersonalOnboarding?> GetByIdForUpdateAsync(long id);
+    Task UpdateAsync(PersonalOnboarding onboarding);
 }
+
