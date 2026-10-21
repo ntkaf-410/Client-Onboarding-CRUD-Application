@@ -21,4 +21,11 @@ public class PersonalsController : ControllerBase
         var result = await _service.GetPagedAsync(page, size, search);
         return Ok(result);
     }
+
+    [HttpGet("{id:long}")]
+    public async Task<ActionResult<PersonalResponse>> GetById(long id)
+    {
+        var result = await _service.GetByIdAsync(id);
+        return Ok(result);
+    }
 }

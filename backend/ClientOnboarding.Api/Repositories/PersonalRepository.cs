@@ -34,4 +34,7 @@ public class PersonalRepository : IPersonalRepository
 
         return (items, totalItems);
     }
+
+    public async Task<Personal?> GetByIdAsync(long id) =>
+        await _db.Personals.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
 }

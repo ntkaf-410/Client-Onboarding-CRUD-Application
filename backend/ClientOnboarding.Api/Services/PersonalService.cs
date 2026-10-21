@@ -1,5 +1,6 @@
 using ClientOnboarding.Api.Dtos;
 using ClientOnboarding.Api.Entities;
+using ClientOnboarding.Api.Exceptions;
 using ClientOnboarding.Api.Repositories;
 
 namespace ClientOnboarding.Api.Services;
@@ -49,4 +50,11 @@ public class PersonalService : IPersonalService
         CreatedAt = p.CreatedAt,
         UpdatedAt = p.UpdatedAt
     };
+
+    public async Task<PersonalResponse> GetByIdAsync(long id)
+    {
+        var personal = await _repository.GetByIdAsync(id)
+            ?? throw new NotFoundException($"Personal with id {id} not found.");
+        return ToResponse(personal);
+    }
 }
