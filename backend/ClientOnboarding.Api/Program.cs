@@ -1,5 +1,7 @@
 using ClientOnboarding.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using ClientOnboarding.Api.Repositories;
+using ClientOnboarding.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,9 @@ var connectionString = builder.Configuration.GetConnectionString("Default");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention());
+
+builder.Services.AddScoped<IPersonalRepository, PersonalRepository>();
+builder.Services.AddScoped<IPersonalService, PersonalService>();
 
 var app = builder.Build();
 
