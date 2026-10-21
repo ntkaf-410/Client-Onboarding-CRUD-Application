@@ -24,6 +24,16 @@ public class ExceptionHandlingMiddleware
         {
             await WriteAsync(context, StatusCodes.Status404NotFound, "NOT_FOUND", ex.Message);
         }
+
+        catch (DuplicateResourceException ex)
+        {
+            var fieldErrors = ex.Field is null
+                ? null
+                : new List<FieldError> { new() { Field = ex.Field, Message = ex.Message } };
+
+            await WriteAsync(context, StatusCodes.Status409Conflict,
+                "DUPLICATE_RESOURCE", ex.Message, fieldErrors);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled error on {Method} {Path}",
@@ -33,14 +43,16 @@ public class ExceptionHandlingMiddleware
         }
     }
 
-    private static Task WriteAsync(HttpContext context, int status, string error, string message)
+    private static Task WriteAsync(HttpContext context, int status, string error,
+    string message, List<FieldError>? fieldErrors = null)
     {
-        context.Response.StatusCode = status;
-        return context.Response.WriteAsJsonAsync(new ErrorResponse
-        {
-            Status = status,
-            Error = error,
-            Message = message
-        });
+    context.Response.StatusCode = status;
+    return context.Response.WriteAsJsonAsync(new ErrorResponse
+    {
+        Status = status,
+        Error = error,
+        Message = message,
+        FieldErrors = fieldErrors
+    });
     }
 }

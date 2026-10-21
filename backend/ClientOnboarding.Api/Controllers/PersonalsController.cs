@@ -28,4 +28,11 @@ public class PersonalsController : ControllerBase
         var result = await _service.GetByIdAsync(id);
         return Ok(result);
     }
+
+    [HttpPost]
+    public async Task<ActionResult<PersonalResponse>> Create([FromBody] PersonalRequest request)
+    {
+        var created = await _service.CreateAsync(request);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
 }

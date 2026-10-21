@@ -37,4 +37,13 @@ public class PersonalRepository : IPersonalRepository
 
     public async Task<Personal?> GetByIdAsync(long id) =>
         await _db.Personals.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+
+    public Task<bool> ExistsByIdDocumentAsync(string idType, string idNumber) =>
+        _db.Personals.AnyAsync(p => p.IdType == idType && p.IdNumber == idNumber);
+
+    public async Task AddAsync(Personal personal)
+    {
+        await _db.Personals.AddAsync(personal);
+        await _db.SaveChangesAsync();
+    }
 }

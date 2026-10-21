@@ -2,6 +2,9 @@ using ClientOnboarding.Api.Dtos;
 using ClientOnboarding.Api.Entities;
 using ClientOnboarding.Api.Exceptions;
 using ClientOnboarding.Api.Repositories;
+using ClientOnboarding.Api.Common;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace ClientOnboarding.Api.Services;
 
@@ -47,8 +50,8 @@ public class PersonalService : IPersonalService
         MobileNumber = p.MobileNumber,
         Occupation = p.Occupation,
         EmploymentStatus = p.EmploymentStatus,
-        CreatedAt = p.CreatedAt,
-        UpdatedAt = p.UpdatedAt
+        CreatedAt = DbTime.AsUtc(p.CreatedAt),
+        UpdatedAt = DbTime.AsUtc(p.UpdatedAt)
     };
 
     public async Task<PersonalResponse> GetByIdAsync(long id)
@@ -57,4 +60,52 @@ public class PersonalService : IPersonalService
             ?? throw new NotFoundException($"Personal with id {id} not found.");
         return ToResponse(personal);
     }
+
+    public async Task<PersonalResponse> CreateAsync(PersonalRequest request)
+    {
+        var idNumber = request.IdNumber.Trim();
+
+        if (await _repository.ExistsByIdDocumentAsync(request.IdType, idNumber))
+            throw new DuplicateResourceException(
+            "A client with this ID type and number already exists", "idNumber");
+
+    var now = DbTime.Now();
+
+    var personal = new Personal
+    {
+        Title = request.Title,
+        FirstName = request.FirstName.Trim(),
+        MiddleName = TrimOrNull(request.MiddleName),
+        LastName = request.LastName.Trim(),
+        DateOfBirth = request.DateOfBirth!.Value,
+        Gender = request.Gender,
+        MaritalStatus = request.MaritalStatus,
+        Nationality = request.Nationality.Trim(),
+        IdType = request.IdType,
+        IdNumber = idNumber,
+        IdExpiryDate = request.IdExpiryDate,
+        Email = request.Email.Trim(),
+        MobileNumber = request.MobileNumber.Trim(),
+        Occupation = TrimOrNull(request.Occupation),
+        EmploymentStatus = request.EmploymentStatus,
+        CreatedAt = now,
+        UpdatedAt = now
+    };
+
+    try
+    {
+        await _repository.AddAsync(personal);
+    }
+    catch (DbUpdateException ex)
+        when (ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+    {
+        throw new DuplicateResourceException(
+            "A client with this ID type and number already exists", "idNumber");
+    }
+
+    return ToResponse(personal);
+    }
+
+private static string? TrimOrNull(string? value) =>
+    string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }
