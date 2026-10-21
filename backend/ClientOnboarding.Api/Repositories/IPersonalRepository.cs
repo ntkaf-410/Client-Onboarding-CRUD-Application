@@ -11,4 +11,5 @@ public interface IPersonalRepository
     Task UpdateAsync(Personal personal);
     Task AddAsync(Personal personal);
     Task<bool> DeleteAsync(long id);
+    Task<bool> ExistsAsync(long id);
 }

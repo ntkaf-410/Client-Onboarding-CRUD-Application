@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<Personal> Personals => Set<Personal>();
+    public DbSet<Address> Addresses => Set<Address>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Personal>(entity =>
@@ -31,6 +32,27 @@ public class AppDbContext : DbContext
             entity.Property(p => p.MobileNumber).HasMaxLength(20);
             entity.Property(p => p.Occupation).HasMaxLength(100);
             entity.Property(p => p.EmploymentStatus).HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<Address>(entity =>
+        {
+            entity.ToTable("address");
+            entity.HasKey(a => a.Id);
+            entity.Property(a => a.Id).ValueGeneratedOnAdd();
+            entity.Property(a => a.AddressLine1).HasColumnName("address_line_1").HasMaxLength(100);
+            entity.Property(a => a.AddressLine2).HasColumnName("address_line_2").HasMaxLength(100);
+            entity.Property(a => a.AddressType).HasMaxLength(12);
+            entity.Property(a => a.Suburb).HasMaxLength(60);
+            entity.Property(a => a.City).HasMaxLength(60);
+            entity.Property(a => a.District).HasMaxLength(60);
+            entity.Property(a => a.PostalCode).HasMaxLength(10);
+            entity.Property(a => a.Country).HasMaxLength(60);
+            entity.Property(a => a.ResidentialStatus).HasMaxLength(20);
+            entity.Property(a => a.CreatedAt)
+                .HasColumnType("timestamp without time zone")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(a => a.UpdatedAt).HasColumnType("timestamp without time zone");
+            entity.HasIndex(a => new { a.PersonalId, a.AddressType }).IsUnique();
         });
     
     }

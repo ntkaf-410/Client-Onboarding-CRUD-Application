@@ -75,7 +75,7 @@ public class PersonalService : IPersonalService
     {
         Title = request.Title,
         FirstName = request.FirstName.Trim(),
-        MiddleName = TrimOrNull(request.MiddleName),
+        MiddleName = TextHelper.TrimOrNull(request.MiddleName),
         LastName = request.LastName.Trim(),
         DateOfBirth = request.DateOfBirth!.Value,
         Gender = request.Gender,
@@ -86,7 +86,7 @@ public class PersonalService : IPersonalService
         IdExpiryDate = request.IdExpiryDate,
         Email = request.Email.Trim(),
         MobileNumber = request.MobileNumber.Trim(),
-        Occupation = TrimOrNull(request.Occupation),
+        Occupation = TextHelper.TrimOrNull(request.Occupation),
         EmploymentStatus = request.EmploymentStatus,
         CreatedAt = now,
         UpdatedAt = now
@@ -114,7 +114,7 @@ private static void ApplyRequest(Personal personal, PersonalRequest request)
 {
     personal.Title = request.Title;
     personal.FirstName = request.FirstName.Trim();
-    personal.MiddleName = TrimOrNull(request.MiddleName);
+    personal.MiddleName = TextHelper.TrimOrNull(request.MiddleName);
     personal.LastName = request.LastName.Trim();
     personal.DateOfBirth = request.DateOfBirth!.Value;
     personal.Gender = request.Gender;
@@ -125,7 +125,7 @@ private static void ApplyRequest(Personal personal, PersonalRequest request)
     personal.IdExpiryDate = request.IdExpiryDate;
     personal.Email = request.Email.Trim();
     personal.MobileNumber = request.MobileNumber.Trim();
-    personal.Occupation = TrimOrNull(request.Occupation);
+    personal.Occupation = TextHelper.TrimOrNull(request.Occupation);
     personal.EmploymentStatus = request.EmploymentStatus;
 }
 
@@ -149,7 +149,7 @@ public async Task<PersonalResponse> UpdateAsync(long id, PersonalRequest request
     {
         await _repository.UpdateAsync(personal);
     }
-    catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+    catch (DbUpdateException ex) when (DbErrors.IsUniqueViolation(ex))
     {
         throw new DuplicateResourceException(
             "A client with this ID type and number already exists", "idNumber");

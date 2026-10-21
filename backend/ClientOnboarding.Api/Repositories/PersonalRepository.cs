@@ -60,4 +60,7 @@ public class PersonalRepository : IPersonalRepository
 
     public async Task<bool> DeleteAsync(long id) =>
         await _db.Personals.Where(p => p.Id == id).ExecuteDeleteAsync() > 0;
+
+    public async Task<bool> ExistsAsync(long id) =>
+        await _db.Personals.AnyAsync(p => p.Id == id);
 }
