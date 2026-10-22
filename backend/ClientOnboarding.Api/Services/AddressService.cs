@@ -32,6 +32,9 @@ public class AddressService : IAddressService
         if (await _addresses.ExistsByTypeAsync(personalId, request.AddressType))
             throw new DuplicateResourceException(
                 $"This client already has a {request.AddressType} address", "addressType");
+            
+            await EnsurePersonalExistsAsync(personalId);
+            await _guard.EnsureEditableAsync(personalId);
 
         var now = DbTime.Now();
         var address = new Address { PersonalId = personalId, CreatedAt = now, UpdatedAt = now };
@@ -100,6 +103,8 @@ public class AddressService : IAddressService
 {
     var address = await _addresses.GetByIdForUpdateAsync(id)
         ?? throw new NotFoundException($"Address with id {id} was not found");
+    
+    await _guard.EnsureEditableAsync(address.PersonalId);
 
     if (await _addresses.ExistsByTypeAsync(address.PersonalId, request.AddressType, excludeId: id))
         throw new DuplicateResourceException(
@@ -123,9 +128,21 @@ public class AddressService : IAddressService
 
 public async Task DeleteAsync(long id)
 {
-    var deleted = await _addresses.DeleteAsync(id);
+    var address = await _addresses.GetByIdAsync(id)
+        ?? throw new NotFoundException($"Address with id {id} was not found");
+    
+    await _guard.EnsureEditableAsync(address.PersonalId);
 
-    if (!deleted)
+    if (!await _addresses.DeleteAsync(id))
         throw new NotFoundException($"Address with id {id} was not found");
+}
+
+private readonly IOnboardingGuard _guard;
+
+public AddressService(IAddressRepository addresses, IPersonalRepository personals, IOnboardingGuard guard)
+{
+    _addresses = addresses;
+    _personals = personals;
+    _guard = guard;
 }
 }

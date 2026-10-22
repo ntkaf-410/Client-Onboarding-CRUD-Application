@@ -135,6 +135,8 @@ public async Task<PersonalResponse> UpdateAsync(long id, PersonalRequest request
     var personal = await _repository.GetByIdForUpdateAsync(id)
         ?? throw new NotFoundException($"Personal with id {id} was not found");
 
+    await _guard.EnsureEditableAsync(id);
+
     var idNumber = request.IdNumber.Trim();
 
     if (await _repository.ExistsByIdDocumentAsync(request.IdType, idNumber, excludeId: id))
@@ -161,5 +163,13 @@ public async Task DeleteAsync(long id)
     var deleted = await _repository.DeleteAsync(id);
     if (!deleted)
         throw new NotFoundException($"Personal with id {id} was not found");
+}
+
+private readonly IOnboardingGuard _guard;
+
+public PersonalService(IPersonalRepository repository, IOnboardingGuard guard)
+{
+    _repository = repository;
+    _guard = guard;
 }
 }

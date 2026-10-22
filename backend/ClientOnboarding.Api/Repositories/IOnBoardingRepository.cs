@@ -11,5 +11,6 @@ public interface IOnboardingRepository
     Task<PersonalOnboarding> AddAsync(PersonalOnboarding onboarding);
     Task<PersonalOnboarding?> GetByIdForUpdateAsync(long id);
     Task UpdateAsync(PersonalOnboarding onboarding);
+    Task<string?> GetStatusByPersonalIdAsync(long personalId);
 }
 

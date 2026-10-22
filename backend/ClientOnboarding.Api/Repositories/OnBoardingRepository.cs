@@ -59,4 +59,10 @@ public class OnboardingRepository : IOnboardingRepository
     {
     await _db.SaveChangesAsync();
     }
+    public async Task<string?> GetStatusByPersonalIdAsync(long personalId) =>
+    await _db.Set<PersonalOnboarding>()
+        .AsNoTracking()
+        .Where(o => o.PersonalId == personalId)
+        .Select(o => o.Status)
+        .FirstOrDefaultAsync();
 }
