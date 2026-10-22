@@ -139,3 +139,11 @@ C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-check-7ba3166318fc4eb8a9f
 C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-check-7ba3166318fc4eb8a9f13ab0156bc7d7\ClientOnboarding.Api.dll
 C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-check-7ba3166318fc4eb8a9f13ab0156bc7d7\ClientOnboarding.Api.pdb
 C:\Users\ntkaf\Documents\GitHub\Client-Onboarding-CRUD-Application\backend\ClientOnboarding.Api\bin\Debug\net10.0\ClientOnboarding.Api.exe
+C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\appsettings.Development.json
+C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\appsettings.json
+C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\ClientOnboarding.Api.staticwebassets.endpoints.json
+C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\ClientOnboarding.Api.exe
+C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\ClientOnboarding.Api.deps.json
+C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\ClientOnboarding.Api.runtimeconfig.json
+C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\ClientOnboarding.Api.dll
+C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\ClientOnboarding.Api.pdb

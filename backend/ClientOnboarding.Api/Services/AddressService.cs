@@ -12,12 +12,6 @@ public class AddressService : IAddressService
     private readonly IAddressRepository _addresses;
     private readonly IPersonalRepository _personals;
 
-    public AddressService(IAddressRepository addresses, IPersonalRepository personals)
-    {
-        _addresses = addresses;
-        _personals = personals;
-    }
-
     public async Task<IReadOnlyList<AddressResponse>> GetByPersonalAsync(long personalId)
     {
         await EnsurePersonalExistsAsync(personalId);

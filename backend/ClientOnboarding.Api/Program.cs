@@ -9,7 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Logging.AddSimpleConsole(options =>
+{
+    options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
+    options.UseUtcTimestamp = true;
+    options.SingleLine = true;
+});
 
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
@@ -49,9 +54,21 @@ builder.Services.AddScoped<IOnboardingRepository, OnboardingRepository>();
 builder.Services.AddScoped<IOnboardingService, OnboardingService>();
 builder.Services.AddScoped<IOnboardingGuard, OnboardingGuard>();
 
+const string CorsPolicyName = "AngularDevServer";
+var allowedOrigin = builder.Configuration["AllowedOrigin"]
+    ?? throw new InvalidOperationException("AllowedOrigin is not configured");
+
+builder.Services.AddCors(options =>
+    options.AddPolicy(CorsPolicyName, policy =>
+        policy.WithOrigins(allowedOrigin)
+              .AllowAnyHeader()
+              .AllowAnyMethod()));
+              
 var app = builder.Build();
 
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseCors(CorsPolicyName);
 
 using (var scope = app.Services.CreateScope())
 {

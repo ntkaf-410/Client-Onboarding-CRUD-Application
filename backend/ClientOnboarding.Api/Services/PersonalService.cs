@@ -13,8 +13,6 @@ public class PersonalService : IPersonalService
     private const int MaxSize = 50;
     private readonly IPersonalRepository _repository;
 
-    public PersonalService(IPersonalRepository repository) => _repository = repository;
-
     public async Task<PagedResponse<PersonalResponse>> GetPagedAsync(int page, int size, string? search)
     {
         (page, size) = Paging.Normalise(page, size);
