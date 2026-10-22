@@ -39,7 +39,20 @@ builder.Services.AddControllers()
             });
         };
     });// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+    document.Info = new()
+    {
+        Title = "Client Onboarding API",
+        Version = "v1",
+        Description = "API for managing client onboarding processes"
+    
+    };
+    return Task.CompletedTask;
+    });
+});
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 

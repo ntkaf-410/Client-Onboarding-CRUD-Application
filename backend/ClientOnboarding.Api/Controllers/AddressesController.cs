@@ -12,6 +12,8 @@ public class AddressesController : ControllerBase
     public AddressesController(IAddressService service) => _service = service;
 
     [HttpGet("api/personals/{personalId:long}/addresses")]
+    [ProducesResponseType<IReadOnlyList<AddressResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyList<AddressResponse>>> GetByPersonal(long personalId)
     {
         var result = await _service.GetByPersonalAsync(personalId);
@@ -19,6 +21,11 @@ public class AddressesController : ControllerBase
     }
 
     [HttpPost("api/personals/{personalId:long}/addresses")]
+    [ProducesResponseType<AddressResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<AddressResponse>> Create(
         long personalId, [FromBody] AddressRequest request)
     {
@@ -27,6 +34,8 @@ public class AddressesController : ControllerBase
     }
 
     [HttpGet("api/addresses/{id:long}")]
+    [ProducesResponseType<AddressResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AddressResponse>> GetById(long id)
     {
         var result = await _service.GetByIdAsync(id);
@@ -34,6 +43,11 @@ public class AddressesController : ControllerBase
     }
 
     [HttpPut("api/addresses/{id:long}")]
+    [ProducesResponseType<AddressResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<AddressResponse>> Update(long id, [FromBody] AddressRequest request)
     {
         var result = await _service.UpdateAsync(id, request);
@@ -41,6 +55,9 @@ public class AddressesController : ControllerBase
     }
 
     [HttpDelete("api/addresses/{id:long}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> Delete(long id)
     {
         await _service.DeleteAsync(id);

@@ -147,3 +147,5 @@ C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\ClientOnboarding.Ap
 C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\ClientOnboarding.Api.runtimeconfig.json
 C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\ClientOnboarding.Api.dll
 C:\Users\ntkaf\AppData\Local\Temp\ClientOnboarding.Api-build\ClientOnboarding.Api.pdb
+C:\Users\ntkaf\Documents\GitHub\Client-Onboarding-CRUD-Application\backend\ClientOnboarding.Api\bin\Debug\net10.0\ClientOnboarding.Api.xml
+C:\Users\ntkaf\Documents\GitHub\Client-Onboarding-CRUD-Application\backend\ClientOnboarding.Api\obj\Debug\net10.0\ClientOnboarding.Api.xml

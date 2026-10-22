@@ -14,6 +14,8 @@ public class OnboardingsController : ControllerBase
     public OnboardingsController(IOnboardingService service) => _service = service;
 
     [HttpGet]
+    [ProducesResponseType<PagedResponse<OnboardingListItem>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PagedResponse<OnboardingListItem>>> GetAll(
         [FromQuery] int page = 0,
         [FromQuery] int size = 10,
@@ -26,6 +28,8 @@ public class OnboardingsController : ControllerBase
     }
 
     [HttpGet("{id:long}")]
+    [ProducesResponseType<OnboardingResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<OnboardingResponse>> GetById(long id)
     {
         var result = await _service.GetByIdAsync(id);
@@ -33,6 +37,10 @@ public class OnboardingsController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType<OnboardingResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<OnboardingResponse>> Create([FromBody] OnboardingCreateRequest request)
     {
         var created = await _service.CreateAsync(request);
@@ -40,6 +48,10 @@ public class OnboardingsController : ControllerBase
     }
 
     [HttpPut("{id:long}")]
+    [ProducesResponseType<OnboardingResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<OnboardingResponse>> Update(
         long id, [FromBody] OnboardingUpdateRequest request)
     {
@@ -48,6 +60,8 @@ public class OnboardingsController : ControllerBase
     }
 
     [HttpDelete("{id:long}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]    
 public async Task<IActionResult> Delete(long id)
 {
     await _service.DeleteAsync(id);
@@ -55,6 +69,9 @@ public async Task<IActionResult> Delete(long id)
 }
 
 [HttpPost("{id:long}/submit")]
+[ProducesResponseType<OnboardingResponse>(StatusCodes.Status200OK)]
+[ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+[ProducesResponseType<ErrorResponse>(StatusCodes.Status422UnprocessableEntity)]
 public async Task<ActionResult<OnboardingResponse>> Submit(long id)
 {
     var result = await _service.SubmitAsync(id);
