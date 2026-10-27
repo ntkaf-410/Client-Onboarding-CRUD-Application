@@ -1,0 +1,94 @@
+<div class="header">
+  <h1>Onboardings</h1>
+  <a mat-flat-button routerLink="/onboardings/new">+ New onboarding</a>
+</div>
+
+<div class="filters">
+  <mat-form-field class="search">
+    <mat-label>Search name or ID number</mat-label>
+    <input matInput [formControl]="searchControl" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Status</mat-label>
+    <mat-select [formControl]="statusControl">
+      <mat-option value="">All</mat-option>
+      @for (option of statusOptions; track option.value) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+@if (loading()) {
+  <div class="spinner"><mat-progress-spinner mode="indeterminate" diameter="32" /></div>
+}
+
+@if (error(); as err) {
+  <div class="state" role="alert">
+    <p>{{ err.message }}</p>
+    <button mat-stroked-button type="button" (click)="retry()">Try again</button>
+  </div>
+} @else if (data(); as result) {
+  @if (result.totalItems === 0) {
+    <div class="state">
+      @if (filtersActive()) {
+        <p>No onboardings match your search.</p>
+        <button mat-stroked-button type="button" (click)="clearFilters()">Clear filters</button>
+      } @else {
+        <p>No onboardings yet. Start your first one.</p>
+        <a mat-flat-button routerLink="/onboardings/new">New onboarding</a>
+      }
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table mat-table [dataSource]="result.items">
+        <ng-container matColumnDef="clientName">
+          <th mat-header-cell *matHeaderCellDef>Client name</th>
+          <td mat-cell *matCellDef="let row">{{ row.clientName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="idNumber">
+          <th mat-header-cell *matHeaderCellDef>ID number</th>
+          <td mat-cell *matCellDef="let row">{{ row.idNumber }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="status" [class.status--submitted]="row.status === 'SUBMITTED'">{{ row.status }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="currentStep">
+          <th mat-header-cell *matHeaderCellDef>Step</th>
+          <td mat-cell *matCellDef="let row">{{ row.currentStep }} of 3</td>
+        </ng-container>
+
+        <ng-container matColumnDef="updatedAt">
+          <th mat-header-cell *matHeaderCellDef>Last updated</th>
+          <td mat-cell *matCellDef="let row">{{ row.updatedAt | date: 'dd MMM yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let row">
+            <a mat-button [routerLink]="openLink(row)">{{ row.status === 'DRAFT' ? 'Resume' : 'Open' }}</a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [length]="result.totalItems"
+      [pageIndex]="result.page"
+      [pageSize]="result.size"
+      [pageSizeOptions]="pageSizeOptions"
+      showFirstLastButtons
+      (page)="onPage($event)"
+    />
+  }
+}
