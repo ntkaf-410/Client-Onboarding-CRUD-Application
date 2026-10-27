@@ -4,6 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AppError } from '../../../core/models/app-error.model';
 import { Onboarding } from '../../../core/models/onboarding.model';
 import { OnboardingApiService } from '../services/onboarding-api.service';
+import { AddressFormValue } from '../../../core/models/address-form.model';
 
 @Injectable()
 export class WizardStore {
@@ -14,11 +15,13 @@ export class WizardStore {
   readonly activeStep = signal(1);
   readonly loading = signal(false);
   readonly error = signal<AppError | null>(null);
+  readonly addressDraft = signal<AddressFormValue | null>(null);
 
   ensureLoaded(id: number): void {
     if (this.onboarding()?.id === id) {
       return;
     }
+    this.addressDraft.set(null);
     this.onboarding.set(null);
     this.error.set(null);
     this.loading.set(true);
@@ -49,6 +52,7 @@ export class WizardStore {
 
   reset(): void {
     this.onboarding.set(null);
+    this.addressDraft.set(null);
     this.error.set(null);
   }
 }

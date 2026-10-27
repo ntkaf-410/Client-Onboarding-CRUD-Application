@@ -32,6 +32,13 @@ export const routes: Routes = [
                 (m) => m.PersonalStepComponent,
               ),
           },
+          {
+            path: ':id/address',
+            loadComponent: () =>
+              import('./features/onboarding/address-step/address-step.component').then(
+                (m) => m.AddressStepComponent,
+              ),
+          }
         ],
       },
     ],

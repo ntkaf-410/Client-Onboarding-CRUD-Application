@@ -1,0 +1,15 @@
+.same {
+  display: block;
+  margin: 8px 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.actions button mat-progress-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
