@@ -1,0 +1,132 @@
+<form [formGroup]="form" (ngSubmit)="next()" novalidate>
+  <div class="grid">
+    <mat-form-field>
+      <mat-label>Title</mat-label>
+      <mat-select formControlName="title">
+        @for (option of titles; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ message('title') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>First name</mat-label>
+      <input matInput formControlName="firstName" autocomplete="given-name" />
+      <mat-error>{{ message('firstName') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Middle name</mat-label>
+      <input matInput formControlName="middleName" autocomplete="additional-name" />
+      <mat-error>{{ message('middleName') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Last name</mat-label>
+      <input matInput formControlName="lastName" autocomplete="family-name" />
+      <mat-error>{{ message('lastName') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Date of birth</mat-label>
+      <input matInput [matDatepicker]="dobPicker" [max]="maxBirthDate" formControlName="dateOfBirth" />
+      <mat-datepicker-toggle matIconSuffix [for]="dobPicker" />
+      <mat-datepicker #dobPicker startView="multi-year" />
+      <mat-error>{{ message('dateOfBirth') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Gender</mat-label>
+      <mat-select formControlName="gender">
+        @for (option of genders; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ message('gender') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Marital status</mat-label>
+      <mat-select formControlName="maritalStatus">
+        @for (option of maritalStatuses; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ message('maritalStatus') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Nationality</mat-label>
+      <mat-select formControlName="nationality">
+        @for (country of countries(); track country) {
+          <mat-option [value]="country">{{ country }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ message('nationality') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Employment status</mat-label>
+      <mat-select formControlName="employmentStatus">
+        @for (option of employmentStatuses; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ message('employmentStatus') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>ID type</mat-label>
+      <mat-select formControlName="idType">
+        @for (option of idTypes; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+      <mat-error>{{ message('idType') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>ID number</mat-label>
+      <input matInput formControlName="idNumber" />
+      <mat-error>{{ message('idNumber') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>ID expiry date</mat-label>
+      <input matInput [matDatepicker]="expiryPicker" formControlName="idExpiryDate" />
+      <mat-datepicker-toggle matIconSuffix [for]="expiryPicker" />
+      <mat-datepicker #expiryPicker />
+      <mat-hint>Required for passports and driver's licences</mat-hint>
+      <mat-error>{{ message('idExpiryDate') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" autocomplete="email" />
+      <mat-error>{{ message('email') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Mobile number</mat-label>
+      <input matInput type="tel" formControlName="mobileNumber" autocomplete="tel" />
+      <mat-error>{{ message('mobileNumber') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Occupation</mat-label>
+      <input matInput formControlName="occupation" />
+      <mat-error>{{ message('occupation') }}</mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="actions">
+    <a mat-stroked-button routerLink="/onboardings">Cancel</a>
+    <button mat-flat-button type="submit" [disabled]="saving()">
+      @if (saving()) {
+        <mat-progress-spinner mode="indeterminate" diameter="18" />
+      }
+      Next
+    </button>
+  </div>
+</form>

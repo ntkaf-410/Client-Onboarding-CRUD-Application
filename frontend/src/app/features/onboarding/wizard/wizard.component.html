@@ -1,0 +1,26 @@
+<h1>Client onboarding</h1>
+
+@if (store.onboarding(); as onboarding) {
+  <p class="client">
+    {{ onboarding.personal.firstName }} {{ onboarding.personal.lastName }} · {{ onboarding.status }}
+  </p>
+}
+
+<app-wizard-stepper
+  [active]="store.activeStep()"
+  [onboardingId]="store.onboarding()?.id ?? null"
+  [reached]="store.onboarding()?.currentStep ?? 0"
+/>
+
+@if (store.loading()) {
+  <div class="state"><mat-progress-spinner mode="indeterminate" diameter="32" /></div>
+}
+
+@if (store.error(); as err) {
+  <div class="state" role="alert">
+    <p>{{ err.message }}</p>
+    <a mat-stroked-button routerLink="/onboardings">Back to the list</a>
+  </div>
+} @else {
+  <router-outlet />
+}
