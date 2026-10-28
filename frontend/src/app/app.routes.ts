@@ -52,7 +52,12 @@ export const routes: Routes = [
               import('./features/onboarding/detail/onboarding-detail.component').then(
                 (m) => m.OnboardingDetailComponent,
               ),
-          }
+          },
+          {
+            path: '**',
+            loadComponent: () =>
+              import('./shared/not-found/not-found.component').then((m) => m.NotFoundComponent),
+          },
         ],
       },
     ],

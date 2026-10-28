@@ -291,10 +291,6 @@ export class AddressStepComponent {
 
   private handleError(err: unknown): void {
     if (err instanceof AppError && err.fieldErrors.length > 0) {
-      const group =
-        this.activeType === 'POSTAL'
-          ? this.form.controls.postal
-          : this.form.controls.residential;
       const unmatched: string[] = [];
       for (const fieldError of err.fieldErrors) {
         const control =
