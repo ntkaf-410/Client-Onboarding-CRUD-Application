@@ -1,0 +1,63 @@
+@let p = personal();
+
+<section class="card">
+  <header>
+    <h2>Personal information</h2>
+    @if (editable()) {
+      <a [routerLink]="['/onboardings', onboarding().id, 'personal']">
+        Edit<span class="visually-hidden"> personal information</span>
+      </a>
+    }
+  </header>
+  <dl>
+    <div><dt>Name</dt><dd>{{ fullName() }}</dd></div>
+    <div><dt>Date of birth</dt><dd>{{ p.dateOfBirth | date: 'dd MMM yyyy' }}</dd></div>
+    <div><dt>Gender</dt><dd>{{ label(genders, p.gender) }}</dd></div>
+    <div><dt>Marital status</dt><dd>{{ label(maritalStatuses, p.maritalStatus) }}</dd></div>
+    <div><dt>Nationality</dt><dd>{{ p.nationality }}</dd></div>
+    <div><dt>ID</dt><dd>{{ label(idTypes, p.idType) }} {{ p.idNumber }}</dd></div>
+    @if (p.idExpiryDate) {
+      <div><dt>ID expiry date</dt><dd>{{ p.idExpiryDate | date: 'dd MMM yyyy' }}</dd></div>
+    }
+    <div><dt>Email</dt><dd>{{ p.email }}</dd></div>
+    <div><dt>Mobile</dt><dd>{{ p.mobileNumber }}</dd></div>
+    <div><dt>Occupation</dt><dd>{{ p.occupation || '—' }}</dd></div>
+    <div><dt>Employment</dt><dd>{{ label(employmentStatuses, p.employmentStatus) }}</dd></div>
+  </dl>
+</section>
+
+<section class="card">
+  <header>
+    <h2>Address information</h2>
+    @if (editable()) {
+      <a [routerLink]="['/onboardings', onboarding().id, 'address']">
+        Edit<span class="visually-hidden"> address information</span>
+      </a>
+    }
+  </header>
+  <dl>
+    <div>
+      <dt>Residential</dt>
+      <dd>
+        @if (residential(); as r) {
+          {{ formatAddress(r) }}
+        } @else {
+          Not provided
+        }
+      </dd>
+    </div>
+    @if (residential(); as r) {
+      <div><dt>Residential status</dt><dd>{{ label(residentialStatuses, r.residentialStatus) }}</dd></div>
+    }
+    <div>
+      <dt>Postal</dt>
+      <dd>
+        @if (postal(); as a) {
+          {{ formatAddress(a) }}
+        } @else {
+          None
+        }
+      </dd>
+    </div>
+  </dl>
+</section>

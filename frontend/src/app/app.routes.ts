@@ -38,6 +38,20 @@ export const routes: Routes = [
               import('./features/onboarding/address-step/address-step.component').then(
                 (m) => m.AddressStepComponent,
               ),
+          },
+          {
+            path: ':id/review',
+            loadComponent: () =>
+              import('./features/onboarding/review-step/review-step.component').then(
+                (m) => m.ReviewStepComponent,
+              ),
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('./features/onboarding/detail/onboarding-detail.component').then(
+                (m) => m.OnboardingDetailComponent,
+              ),
           }
         ],
       },

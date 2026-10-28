@@ -1,0 +1,43 @@
+.card {
+  border: 1px solid var(--mat-sys-outline-variant, #c9c9c9);
+  border-radius: 8px;
+  margin: 16px 0;
+  padding: 16px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+h2 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 8px 16px;
+  margin: 12px 0 0;
+}
+
+dt {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

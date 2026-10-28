@@ -23,6 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogData,
 } from '../../../shared/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from '../../../shared/notification.service';
+import { stepPath } from '../../../core/utils/wizard-steps';
 
 @Component({
   selector: 'app-onboarding-list',
@@ -166,8 +167,7 @@ private afterDelete(): void {
     if (item.status === 'SUBMITTED') {
       return ['/onboardings', item.id];
     }
-    const step = ['personal', 'address', 'review'][item.currentStep - 1] ?? 'personal';
-    return ['/onboardings', item.id, step];
+    return ['/onboardings', item.id, stepPath(item.currentStep)];
   }
 
   private resetAndReload(): void {

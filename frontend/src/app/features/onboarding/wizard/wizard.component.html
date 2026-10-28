@@ -8,7 +8,7 @@
 
 <app-wizard-stepper
   [active]="store.activeStep()"
-  [onboardingId]="store.onboarding()?.id ?? null"
+  [onboardingId]="stepperId()"
   [reached]="store.onboarding()?.currentStep ?? 0"
 />
 
